@@ -1,5 +1,15 @@
-// vars/storeParams.groovy
+// ParameterStorage.groovy
+def storeBuildParameters(build, params) {
+    def previousParams = build.getActions(hudson.model.ParametersAction.class)
+    previousParams.each { action ->
+        action.parameters.each { param ->
+            params.put(param.name, param.value)
+        }
+    }
+}
 
-def call() {
-   sh 'echo this is my build'
+def getPreviousBuildParameters(build) {
+    def params = [:]
+    storeBuildParameters(build, params)
+    return params
 }
