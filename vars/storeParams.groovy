@@ -1,9 +1,15 @@
-// vars/storeParams.groovy
+// ParameterStorage.groovy
+def storeBuildParameters(build, params) {
+    def previousParams = build.getActions(hudson.model.ParametersAction.class)
+    previousParams.each { action ->
+        action.parameters.each { param ->
+            params.put(param.name, param.value)
+        }
+    }
+}
 
-def call(Map params) {
-    def buildId = params.buildId
-    def deposit = params.deposit
-
-    // Store the parameters in a file
-    writeFile file: "/var/lib/jenkins/workspace/parameter_values.txt", text: "Build ID: ${buildId}\nDeposit: ${deposit}"
+def getPreviousBuildParameters(build) {
+    def params = [:]
+    storeBuildParameters(build, params)
+    return params
 }
